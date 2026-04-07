@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum Kelas {
+  AL_KINDI
+  AL_KHAWARIZMI
+  IBNU_KHOLDUN
+  IBNU_SINA
+  IBNU_AL_HAYTAM
+  IBNU_RUSYD
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String
+  nis      String  @unique
+  password String
+  class    Kelas
+  role     Role    @default(STUDENT)
+  image    String? @db.Text
+
+  reports IbadahReport[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model IbadahReport {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime @db.Date
+
+  shalat      Json     // { fardhu: string[], sunnah: string[] }
+  tilawah     String   @default("")
+  murojaah    String   @default("")
+  sedekah     Boolean  @default(false)
+  checklist   Json     // string[]
+  goodDeeds   String   @default("") @map("good_deeds")
+  improvement String   @default("")
+  knowledge   String   @default("")
+  notes       String   @default("")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@map("ibadah_reports")
+}
+
+model Setting {
+  key   String @id
+  value Json
+
+  @@map("settings")
+}

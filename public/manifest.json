@@ -1,0 +1,43 @@
+{
+  "name": "Ibadah Planner - SMP Islam Modern Al Fakhir",
+  "short_name": "Ibadah Planner",
+  "description": "Aplikasi pencatatan ibadah harian siswa SMP Islam Modern Al Fakhir",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ecfdf5",
+  "theme_color": "#064e3b",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-128x128.png", "sizes": "128x128", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-144x144.png", "sizes": "144x144", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "maskable any" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard Siswa",
+      "short_name": "Siswa",
+      "description": "Lihat profil dan pilih laporan",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Lapor Ibadah",
+      "short_name": "Lapor",
+      "description": "Buka formulir laporan ibadah harian",
+      "url": "/form-ibadah",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard Admin",
+      "short_name": "Dashboard",
+      "description": "Lihat rekapitulasi laporan siswa",
+      "url": "/admin/dashboard",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
