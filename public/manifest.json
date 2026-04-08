@@ -2,10 +2,27 @@
   "name": "Ibadah Planner - SMP Islam Modern Al Fakhir",
   "short_name": "Ibadah Planner",
   "description": "Aplikasi pencatatan ibadah harian siswa SMP Islam Modern Al Fakhir",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#ecfdf5",
-  "theme_color": "#064e3b",
+  "background_color": "#ffffff",
+  "theme_color": "#065f46",
+  "categories": ["education", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tampilan Dashboard Admin"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tampilan Laporan Siswa"
+    }
+  ],
   "orientation": "portrait-primary",
   "icons": [
     { "src": "/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "maskable any" },
