@@ -6,21 +6,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const KELAS_OPTIONS = [
-  { value: "AL_KINDI", label: "Al Kindi" },
-  { value: "AL_KHAWARIZMI", label: "Al Khawarizmi" },
   { value: "IBNU_KHOLDUN", label: "Ibnu Kholdun" },
   { value: "IBNU_SINA", label: "Ibnu Sina" },
   { value: "IBNU_AL_HAYTAM", label: "Ibnu Al Haytam" },
   { value: "IBNU_RUSYD", label: "Ibnu Rusyd" },
+  { value: "AL_KINDI", label: "Al Kindi" },
+  { value: "AL_KHAWARIZMI", label: "Al Khawarizmi" },
 ];
 
 const KELAS_DISPLAY: Record<string, string> = {
-  AL_KINDI: "Al Kindi",
-  AL_KHAWARIZMI: "Al Khawarizmi",
   IBNU_KHOLDUN: "Ibnu Kholdun",
   IBNU_SINA: "Ibnu Sina",
   IBNU_AL_HAYTAM: "Ibnu Al Haytam",
   IBNU_RUSYD: "Ibnu Rusyd",
+  AL_KINDI: "Al Kindi",
+  AL_KHAWARIZMI: "Al Khawarizmi",
 };
 
 interface Student {
@@ -37,11 +37,12 @@ export default function ManageStudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
 
   // Form states
   const [newName, setNewName] = useState("");
   const [newNis, setNewNis] = useState("");
-  const [newClass, setNewClass] = useState("AL_KINDI");
+  const [newClass, setNewClass] = useState("IBNU_KHOLDUN");
 
   const fetchStudents = useCallback(async () => {
     setLoading(true);
@@ -86,12 +87,35 @@ export default function ManageStudentsPage() {
       if (res.ok) {
         setNewName("");
         setNewNis("");
-        setNewClass("AL_KINDI");
+        setNewClass("IBNU_KHOLDUN");
         setIsAdding(false);
         fetchStudents();
         alert("Siswa berhasil ditambahkan! Password default adalah 4 angka terakhir dari NIS.");
       } else {
         alert("Gagal menambahkan siswa.");
+      }
+    } catch {
+      alert("Terjadi kesalahan sistem.");
+    }
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingStudent) return;
+    
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingStudent),
+      });
+
+      if (res.ok) {
+        setEditingStudent(null);
+        fetchStudents();
+        alert("Data siswa berhasil diperbarui!");
+      } else {
+        alert("Gagal memperbarui data siswa.");
       }
     } catch {
       alert("Terjadi kesalahan sistem.");
@@ -136,9 +160,9 @@ export default function ManageStudentsPage() {
             <div className="flex items-center gap-4">
               <Link
                 href="/admin/dashboard"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-linear-to-br from-white/20 to-white/10 hover:from-white/30 hover:to-white/20 flex items-center justify-center transition-all shadow-md group border border-white/20"
               >
-                ←
+                <span className="group-hover:-translate-x-0.5 transition-transform text-white font-bold">←</span>
               </Link>
               <div>
                 <h1 className="text-xl font-bold">🎓 Kelola Siswa</h1>
@@ -160,7 +184,7 @@ export default function ManageStudentsPage() {
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 -mt-4 relative z-10">
         <div className="glass-card overflow-hidden">
-          <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+          <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="font-bold text-primary-900 text-lg">
               Daftar Siswa Terdaftar
               <span className="badge badge-blue ml-3">{students.length} Orang</span>
@@ -174,7 +198,7 @@ export default function ManageStudentsPage() {
           </div>
 
           {isAdding && (
-            <div className="p-6 bg-primary-50/50 border-b border-primary-100">
+            <div className="p-6 bg-primary-50/50 border-b border-primary-100 animate-fade-in">
               <form
                 onSubmit={handleAddSubmit}
                 className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end"
@@ -242,12 +266,12 @@ export default function ManageStudentsPage() {
                   <th>NIS</th>
                   <th>Nama Lengkap</th>
                   <th>Kelas</th>
-                  <th className="w-24 text-center">Aksi</th>
+                  <th className="w-32 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {students.map((student, idx) => (
-                  <tr key={student.id}>
+                  <tr key={student.id} className="hover:bg-primary-50/30 transition-colors">
                     <td className="text-center font-medium text-gray-500">
                       {idx + 1}
                     </td>
@@ -261,13 +285,22 @@ export default function ManageStudentsPage() {
                       </span>
                     </td>
                     <td className="text-center">
-                      <button
-                        onClick={() => handleDelete(student.id, student.name)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Hapus Siswa"
-                      >
-                        🗑️
-                      </button>
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => setEditingStudent(student)}
+                          className="p-2 text-primary-600 hover:bg-primary-100 rounded-lg transition-colors"
+                          title="Pindah Kelas / Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => handleDelete(student.id, student.name)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Hapus Siswa"
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -283,6 +316,58 @@ export default function ManageStudentsPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal Edit / Pindah Kelas */}
+      {editingStudent && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="glass-card max-w-sm w-full p-6 animate-scale-in">
+            <div className="flex items-center justify-between mb-4">
+               <h3 className="font-bold text-primary-900">Edit Data Siswa</h3>
+               <button onClick={() => setEditingStudent(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            
+            <form onSubmit={handleUpdate} className="space-y-4">
+               <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Nama Siswa</label>
+                  <input 
+                    type="text" 
+                    value={editingStudent.name} 
+                    onChange={(e) => setEditingStudent({...editingStudent, name: e.target.value})}
+                    className="form-input"
+                  />
+               </div>
+               <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">NIS (Nomor Induk)</label>
+                  <input 
+                    type="text" 
+                    value={editingStudent.nis} 
+                    onChange={(e) => setEditingStudent({...editingStudent, nis: e.target.value})}
+                    className="form-input"
+                  />
+               </div>
+               <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Pindah ke Kelas</label>
+                  <select 
+                    value={editingStudent.class} 
+                    onChange={(e) => setEditingStudent({...editingStudent, class: e.target.value})}
+                    className="form-input"
+                  >
+                    {KELAS_OPTIONS.map((c) => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+               </div>
+               
+               <div className="flex gap-2 pt-2">
+                  <button type="button" onClick={() => setEditingStudent(null)} className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">Batal</button>
+                  <button type="submit" className="flex-1 btn-primary py-2!">Simpan</button>
+               </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
