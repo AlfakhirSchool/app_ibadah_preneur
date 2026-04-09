@@ -20,6 +20,7 @@ export default function StudentDashboard() {
   const router = useRouter();
 
   const [profile, setProfile] = useState<{ id: string, name: string, class: string, nis: string, image: string | null } | null>(null);
+  const [stats, setStats] = useState<{ streak: number, consistency: number, points: number, totalReports: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,6 +43,7 @@ export default function StudentDashboard() {
       if (res.ok) {
         const data = await res.json();
         setProfile(data.user);
+        setStats(data.stats);
       }
     } catch {
       // ignore
@@ -181,14 +183,29 @@ export default function StudentDashboard() {
         <div className="grid grid-cols-2 gap-4 animate-fade-in-delay">
           <Link href="/leaderboard" className="glass-card p-4 flex flex-col items-center justify-center text-center hover:bg-primary-50 transition-colors group">
             <div className="w-10 h-10 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">🏆</div>
-            <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Peringkat</p>
-            <p className="text-lg font-black text-primary-900">Lihat Rank</p>
+            <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Total Poin</p>
+            <p className="text-lg font-black text-primary-900">{stats?.points || 0}</p>
           </Link>
           <div className="glass-card p-4 flex flex-col items-center justify-center text-center">
-            <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl mb-2">💎</div>
-            <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Total Skor</p>
-            <p className="text-lg font-black text-primary-900">Aktif</p>
+            <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-xl mb-2">🔥</div>
+            <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Streak (Hari)</p>
+            <p className="text-lg font-black text-primary-900">{stats?.streak || 0} Hari</p>
           </div>
+        </div>
+
+        {/* Consistency Info */}
+        <div className="glass-card p-4 animate-fade-in-delay bg-linear-to-r from-emerald-600/5 to-primary-600/5 border-emerald-100">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-xs font-bold text-primary-800 uppercase tracking-wider">Tingkat Kedisiplinan</h4>
+            <span className="text-xs font-black text-primary-700">{stats?.consistency || 0}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div 
+              className="bg-emerald-500 h-full rounded-full transition-all duration-1000" 
+              style={{ width: `${stats?.consistency || 0}%` }}
+            ></div>
+          </div>
+          <p className="text-[10px] text-gray-400 mt-2 italic">Dihitung berdasarkan kelengkapan Shalat Fardhu 5 waktu.</p>
         </div>
 
         {/* Action Shortcuts */}

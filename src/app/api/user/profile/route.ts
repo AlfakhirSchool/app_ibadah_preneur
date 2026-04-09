@@ -23,10 +23,73 @@ export async function GET(req: NextRequest) {
         class: true,
         nis: true,
         image: true,
+        reports: {
+          orderBy: { date: 'desc' },
+          take: 30
+        }
       },
     });
+
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+    // Calculate Streak
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0,0,0,0);
     
-    return NextResponse.json({ user });
+    let checkDate = new Date(today);
+    const reportDates = user.reports.map(r => new Date(r.date).toISOString().split('T')[0]);
+
+    // Check if reported today or yesterday to continue streak
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const hasToday = reportDates.includes(today.toISOString().split('T')[0]);
+    const hasYesterday = reportDates.includes(yesterday.toISOString().split('T')[0]);
+
+    if (hasToday || hasYesterday) {
+      let current = hasToday ? today : yesterday;
+      while (reportDates.includes(current.toISOString().split('T')[0])) {
+        streak++;
+        current.setDate(current.getDate() - 1);
+      }
+    }
+
+    // Calculate Score & Consistency
+    let totalPoints = 0;
+    let perfectDays = 0; // Days with 5 fardhu
+    
+    user.reports.forEach(report => {
+        const shalat = report.shalat as any;
+        const checklist = report.checklist as any;
+
+        if (shalat?.fardhu) {
+            totalPoints += shalat.fardhu.length * 5;
+            if (shalat.fardhu.length === 5) perfectDays++;
+        }
+        if (shalat?.sunnah) totalPoints += shalat.sunnah.length * 2;
+        if (report.tilawah) totalPoints += 10;
+        if (report.murojaah) totalPoints += 10;
+        if (report.sedekah) totalPoints += 5;
+        if (checklist) totalPoints += checklist.length * 1;
+    });
+
+    const stats = {
+        streak,
+        consistency: user.reports.length > 0 ? Math.round((perfectDays / user.reports.length) * 100) : 0,
+        points: totalPoints,
+        totalReports: user.reports.length
+    };
+    
+    return NextResponse.json({ 
+        user: {
+            id: user.id,
+            name: user.name,
+            class: user.class,
+            nis: user.nis,
+            image: user.image
+        },
+        stats 
+    });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
   }
