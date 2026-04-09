@@ -111,6 +111,20 @@ export default function AdminDashboard() {
 
   if (!session) return null;
 
+  const calculateScore = (report: Report) => {
+    let score = 0;
+    const shalat = report.shalat as any;
+    const checklist = report.checklist as any;
+
+    if (shalat?.fardhu) score += shalat.fardhu.length * 5;
+    if (shalat?.sunnah) score += shalat.sunnah.length * 2;
+    if (report.tilawah && report.tilawah.trim().length > 0) score += 10;
+    if (report.murojaah && report.murojaah.trim().length > 0) score += 10;
+    if (report.sedekah) score += 5;
+    if (checklist) score += checklist.length * 1;
+    return score;
+  };
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
       weekday: "short",
@@ -140,6 +154,12 @@ export default function AdminDashboard() {
                 className="text-white hover:text-gold-400 font-semibold text-sm flex items-center gap-1.5 bg-white/10 hover:bg-white/20 rounded-xl px-3 py-2 transition-all duration-300"
               >
                 ⚙️ Kelola Soal
+              </Link>
+              <Link
+                href="/leaderboard"
+                className="text-white hover:text-gold-400 font-semibold text-sm flex items-center gap-1.5 bg-white/10 hover:bg-white/20 rounded-xl px-3 py-2 transition-all duration-300"
+              >
+                🏆 Peringkat
               </Link>
               <Link
                 href="/admin/students"
@@ -300,62 +320,68 @@ export default function AdminDashboard() {
                     <th>Kelas</th>
                     <th>Tanggal</th>
                     <th>Fardhu</th>
-                    <th>Sunnah</th>
+                    <th>Poin</th>
                     <th>Sedekah</th>
                     <th>Detail</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {reports.map((report, idx) => (
-                    <tr key={report.id}>
-                      <td className="text-center font-medium text-gray-500">
-                        {idx + 1}
-                      </td>
-                      <td className="font-medium text-primary-900">
-                        {report.user.name}
-                      </td>
-                      <td className="text-gray-600">{report.user.nis}</td>
-                      <td>
-                        <span className="badge badge-green">
-                          {KELAS_DISPLAY[report.user.class] || report.user.class}
-                        </span>
-                      </td>
-                      <td className="text-gray-600 whitespace-nowrap">
-                        {formatDate(report.date)}
-                      </td>
-                      <td className="text-center">
-                        <span
-                          className={`font-bold ${
-                            report.shalat?.fardhu?.length === 5
-                              ? "text-emerald-600"
-                              : "text-amber-600"
-                          }`}
-                        >
-                          {report.shalat?.fardhu?.length || 0}/5
-                        </span>
-                      </td>
-                      <td className="text-center font-medium text-gray-600">
-                        {report.shalat?.sunnah?.length || 0}
-                      </td>
-                      <td className="text-center">
-                        {report.sedekah ? (
-                          <span className="text-emerald-600 font-bold">
-                            ✓
+                  {reports.map((report, idx) => {
+                    const score = calculateScore(report);
+                    const isConsistent = (report.shalat as any)?.fardhu?.length === 5;
+                    
+                    return (
+                      <tr key={report.id} className={isConsistent ? "bg-emerald-50/20" : ""}>
+                        <td className="text-center font-medium text-gray-500">
+                          {idx + 1}
+                        </td>
+                        <td className="font-medium text-primary-900 flex items-center gap-2">
+                          {report.user.name}
+                          {isConsistent && <span title="Sangat Disiplin" className="text-emerald-500 text-xs">🔥</span>}
+                        </td>
+                        <td className="text-gray-600">{report.user.nis}</td>
+                        <td>
+                          <span className="badge badge-green">
+                            {KELAS_DISPLAY[report.user.class] || report.user.class}
                           </span>
-                        ) : (
-                          <span className="text-gray-400">—</span>
-                        )}
-                      </td>
-                      <td className="text-center">
-                        <button
-                          onClick={() => setSelectedReport(report)}
-                          className="text-primary-600 hover:text-primary-800 font-medium text-sm transition-colors"
-                        >
-                          Lihat
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className="text-gray-600 whitespace-nowrap">
+                          {formatDate(report.date)}
+                        </td>
+                        <td className="text-center">
+                          <span
+                            className={`font-bold ${
+                              isConsistent
+                                ? "text-emerald-600"
+                                : "text-amber-600"
+                            }`}
+                          >
+                            {(report.shalat as any)?.fardhu?.length || 0}/5
+                          </span>
+                        </td>
+                        <td className="text-center font-black text-primary-700">
+                          {score}
+                        </td>
+                        <td className="text-center">
+                          {report.sedekah ? (
+                            <span className="text-emerald-600 font-bold">
+                              ✓
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="text-center">
+                          <button
+                            onClick={() => setSelectedReport(report)}
+                            className="bg-primary-50 text-primary-700 hover:bg-primary-100 px-3 py-1 rounded-lg font-medium text-xs transition-colors"
+                          >
+                            Detail
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
