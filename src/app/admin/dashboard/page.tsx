@@ -13,6 +13,8 @@ const KELAS_OPTIONS = [
   { value: "IBNU_SINA", label: "Ibnu Sina" },
   { value: "IBNU_AL_HAYTAM", label: "Ibnu Al Haytam" },
   { value: "IBNU_RUSYD", label: "Ibnu Rusyd" },
+  { value: "AL_KINDI", label: "Al Kindi" },
+  { value: "AL_KHAWARIZMI", label: "Al Khawarizmi" },
 ];
 
 const KELAS_DISPLAY: Record<string, string> = {

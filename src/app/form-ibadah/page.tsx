@@ -36,12 +36,12 @@ const GRADE_MAPPING: Record<string, string> = {
 };
 
 const KELAS_DISPLAY: Record<string, string> = {
-  AL_KINDI: "Al Kindi",
-  AL_KHAWARIZMI: "Al Khawarizmi",
   IBNU_KHOLDUN: "Ibnu Kholdun",
   IBNU_SINA: "Ibnu Sina",
   IBNU_AL_HAYTAM: "Ibnu Al Haytam",
   IBNU_RUSYD: "Ibnu Rusyd",
+  AL_KINDI: "Al Kindi",
+  AL_KHAWARIZMI: "Al Khawarizmi",
 };
 
 export default function FormIbadahPage() {
