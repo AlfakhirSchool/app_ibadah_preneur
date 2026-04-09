@@ -10,8 +10,9 @@ export const metadata: Metadata = {
     "Aplikasi pencatatan ibadah harian siswa SMP Islam Modern Al Fakhir. Pantau shalat, tilawah, murojaah, dan kegiatan ibadah lainnya.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icons/icon-192x192.png",
-    apple: "/icons/icon-192x192.png",
+    icon: "/logo.png",
+    apple: "/logo.png",
+    shortcut: "/logo.png",
   },
   appleWebApp: {
     capable: true,
