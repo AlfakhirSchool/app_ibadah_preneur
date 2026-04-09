@@ -4,7 +4,11 @@ import { useEffect } from "react";
 
 export function PWARegister() {
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
+    // Jangan registrasi Service Worker jika dibuka di aplikasi Android (APK)
+    // agar tidak bentrok dengan sistem internal App
+    const isAndroidApp = navigator.userAgent.includes("IbadahPlannerAndroidApp");
+    
+    if (!isAndroidApp && "serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {

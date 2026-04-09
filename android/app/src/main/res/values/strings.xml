@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ibadah Planner</string>
+    <string name="title_activity_main">Ibadah Planner</string>
+    <string name="package_name">com.ibadah.planner</string>
+    <string name="custom_url_scheme">com.ibadah.planner</string>
+</resources>
