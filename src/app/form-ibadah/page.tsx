@@ -69,6 +69,23 @@ export default function FormIbadahPage() {
     message: string;
   } | null>(null);
   const [existingReport, setExistingReport] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  // Load profile image
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("/api/user/profile");
+        if (res.ok) {
+          const data = await res.json();
+          setProfileImage(data.user.image);
+        }
+      } catch {
+        // ignore
+      }
+    };
+    if (session?.user) fetchProfile();
+  }, [session]);
 
   // Dynamic questions state
   const [questions, setQuestions] = useState({
@@ -313,8 +330,12 @@ export default function FormIbadahPage() {
 
           {/* User Info */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">
-              👤
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center overflow-hidden border border-white/30">
+              {profileImage ? (
+                <img src={profileImage} alt={userName || ""} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-2xl">👤</span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-lg truncate">{userName}</p>

@@ -177,6 +177,20 @@ export default function StudentDashboard() {
           </div>
         </div>
 
+        {/* Stats & Rank Card */}
+        <div className="grid grid-cols-2 gap-4 animate-fade-in-delay">
+          <Link href="/leaderboard" className="glass-card p-4 flex flex-col items-center justify-center text-center hover:bg-primary-50 transition-colors group">
+            <div className="w-10 h-10 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">🏆</div>
+            <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Peringkat</p>
+            <p className="text-lg font-black text-primary-900">Lihat Rank</p>
+          </Link>
+          <div className="glass-card p-4 flex flex-col items-center justify-center text-center">
+            <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl mb-2">💎</div>
+            <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Total Skor</p>
+            <p className="text-lg font-black text-primary-900">Aktif</p>
+          </div>
+        </div>
+
         {/* Action Shortcuts */}
         <div className="glass-card p-5 animate-fade-in-delay">
           <h3 className="font-bold text-primary-900 mb-4 flex items-center gap-2">
