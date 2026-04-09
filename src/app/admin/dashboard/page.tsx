@@ -225,13 +225,13 @@ export default function AdminDashboard() {
             <div className="stat-card">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-amber-500 to-amber-600 flex items-center justify-center text-2xl shadow-lg">
-                  📋
+                  💎
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-primary-900">
-                    {stats.totalReports}
+                    {reports.length > 0 ? Math.round(reports.reduce((acc, curr) => acc + calculateScore(curr), 0) / reports.length) : 0}
                   </p>
-                  <p className="text-sm text-gray-500">Total Laporan</p>
+                  <p className="text-sm text-gray-500">Rerata Skor</p>
                 </div>
               </div>
             </div>
