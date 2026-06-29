@@ -7,7 +7,7 @@ async function main() {
   console.log("🌱 Seeding database...");
 
   // Create Admin
-  const adminPassword = await bcrypt.hash("admin123", 12);
+  const adminPassword = await bcrypt.hash("adminalfakhir#", 12);
   const admin = await prisma.user.upsert({
     where: { nis: "admin" },
     update: {},
@@ -33,21 +33,23 @@ async function main() {
     { name: "Zainab Husna", nis: "2025008", class: Kelas.IBNU_RUSYD },
   ];
 
-  const studentPassword = await bcrypt.hash("siswa123", 12);
+  // ponytail: password = last 4 digits of NIS, matches API logic in /api/admin/users
 
   for (const student of students) {
+    const last4 = student.nis.slice(-4);
+    const pw = await bcrypt.hash(last4, 10);
     const user = await prisma.user.upsert({
       where: { nis: student.nis },
       update: {},
       create: {
         name: student.name,
         nis: student.nis,
-        password: studentPassword,
+        password: pw,
         class: student.class,
         role: Role.STUDENT,
       },
     });
-    console.log(`✅ Student created: ${user.name} (NIS: ${user.nis})`);
+    console.log(`✅ Student created: ${user.name} (NIS: ${user.nis}, PW: ${last4})`);
   }
 
   // Create sample reports for some students
