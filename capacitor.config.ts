@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Ibadah Planner',
   webDir: 'out',
   server: {
-    url: 'https://app-ibadah-alfakhir.vercel.app/',
+    url: 'https://ibadah.smpialfakhir.sch.id/',
     cleartext: true,
     androidScheme: 'https'
   },
